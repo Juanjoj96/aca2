@@ -55,6 +55,7 @@ modelo = sm.Logit(df["Binario"], X)
 resultados = modelo.fit()
 print(resultados.summary())
 
+# grafico en rstudio
 # Predecir las probabilidades con el modelo ajustado
 df_prediccion$probabilidades <- predict(modelo_logistico, newdata = df_prediccion, type = "response")
 

@@ -1,0 +1,56 @@
+## Importar librerias
+import pandas as pd
+import numpy as np
+from scipy.stats import pointbiserialr
+import matplotlib.pyplot as plt
+import statistics
+import statsmodels.api as sm
+import seaborn as sns
+
+## Importar la tabla de excel
+ruta_excel= "C:\\Users\\usuario\\Documents\\ADSO Juan Jose Jaramillo\\EAD\\Estadistica 2\\Latinoamerica.xlsx"
+
+## Definir las variables para cada columna
+ter="Dias_respuesta"
+pais="País"
+estado_orden="Estado Orden"
+reparacion="Reparacion"
+individuos= "Producto"
+serial="País"
+unidades="Cant. PL."
+fecha_i="Fecha Ingreso"
+bi="Binario"
+
+base_prueba = pd.read_excel(ruta_excel,sheet_name="Prueba")
+
+#desviacion estandar
+desviacion_ter=np.std(base_prueba[ter])
+
+#media de datos
+media_ter=np.mean(base_prueba[ter])
+
+#min y max
+min_ter=np.min(base_prueba[ter])
+max_ter=np.max(base_prueba[ter])
+print(f"Los valores de minimo y maximo son = {min_ter} y {max_ter}")
+
+#coeficiente de variacion
+coefi_var=(desviacion_ter/media_ter)*100
+print(f"El coeficiente de variacion es = {coefi_var}%")
+
+#coeficiente de correlacion
+corre,p_valor = pointbiserialr(base_prueba[bi],base_prueba[ter])
+print(f"El coeficiente de correlacion es = {corre}")
+
+# Convertir las columnas en un array
+bi_array = base_prueba["Binario"].to_numpy()
+ter_array = base_prueba["Dias_respuesta"].to_numpy()
+
+# Crear un DataFrame con dos columnas
+df = pd.DataFrame({"Binario": bi_array, "Dias_respuesta": ter_array})
+
+# Ajustar el modelo de regresión logística
+X = sm.add_constant(df["Dias_respuesta"])
+modelo = sm.Logit(df["Binario"], X)
+resultados = modelo.fit()
+print(resultados.summary())
